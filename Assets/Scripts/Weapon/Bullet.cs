@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     }
     void TimeOut()
     {
-        TellScore(false);
+        TellScore();
         Destroy(gameObject);
     }
 
@@ -20,11 +20,11 @@ public class Bullet : MonoBehaviour
         //TARGET LAYER IS CURRENTLY 6
         if (collision.gameObject.layer != 6)
         {
-            TellScore(false);
+            TellScore();
         }
         Destroy(this.gameObject);
     }
-    private void TellScore(bool call)
+    private void TellScore()
     {
         ScoreManager.Instance.MissCounter();
     }
