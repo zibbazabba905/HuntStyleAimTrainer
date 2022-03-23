@@ -1,0 +1,61 @@
+whiteboard for hunt aim trainer
+
+player
+gun ?
+bullet
+target
+range
+
+
+
+fps controls
+  emulate hunt speed / movement
+  aim view
+  fov and control change
+
+shoot bullets
+  start with one genaric ammotype
+  speed change and array
+
+target choreography
+  random positions
+  moving positions
+  increase in range
+    targets shoot back ?
+
+targets get hit
+  target dissapears
+  scores hit
+
+score points
+  time
+  hits
+  saving
+overlays
+  score
+  gun picture site
+  target picture
+
+-create world
+-create player
+-move 
+-and shoot
+-create target
+-target hit detection
+-spawn / despawn targets
+score calculation
+hud target hitmarker
+
+
+namespaces:
+player
+gun
+targets
+score/ui?
+
+
+camera rotations:
+down: -8.5f, baseFOV +15
+Sprint: -8.5f, baseFOV +15
+hip: -6.5f, baseFOV
+ads: -4.5f, baseFOV-20
