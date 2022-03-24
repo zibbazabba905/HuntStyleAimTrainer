@@ -10,16 +10,16 @@ namespace ScoreScripts
     public class ScoreManager : MonoBehaviour
     {
         public static ScoreManager Instance { get; private set; }
-        public Text MissText;
-        public Text HitText;
-        public Text ShotsText;
+        //public Text MissText;
+        //public Text HitText;
+        //public Text ShotsText;
 
         private int _miss;
         public int Miss
         {
             get { return _miss; }
             set { _miss = value;
-                MissText.text = "Miss: " + _miss;
+                UpdateHud("Miss", Miss);
             }
         }
 
@@ -28,18 +28,21 @@ namespace ScoreScripts
         {
             get { return _hit; }
             set { _hit = value;
-                HitText.text = "Hit: " + _hit;
+                UpdateHud("Hit", Hit);
             }
         }
-
 
         private int _shots;
         public int Shots
         {
             get { return _shots; }
             set { _shots = value;
-                ShotsText.text = "Shots: " + _shots;
+                UpdateHud("Shots", Shots);
             }
+        }
+        private void UpdateHud(string catagory, int number)
+        {
+            HUDManager.Instance.TextUpdate(catagory, number);
         }
 
 
