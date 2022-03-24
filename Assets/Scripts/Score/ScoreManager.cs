@@ -28,7 +28,7 @@ namespace ScoreScripts
         {
             get { return _hit; }
             set { _hit = value;
-                UpdateHud("Hit", Hit);
+                //UpdateHud("Hit", Hit);
             }
         }
 
@@ -37,12 +37,14 @@ namespace ScoreScripts
         {
             get { return _shots; }
             set { _shots = value;
-                UpdateHud("Shots", Shots);
+                //UpdateHud("Shots", Shots);
             }
         }
-        private void UpdateHud(string catagory, int number)
+        private void UpdateHud(string category, int number)
         {
-            HUDManager.Instance.TextUpdate(catagory, number);
+            //Debug.Log(category);
+            //Debug.Log(number);
+            HUDManager.Instance.TextUpdate(category, number);
         }
 
 
