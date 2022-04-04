@@ -28,7 +28,7 @@ namespace TargetScripts
         public bool Distance = true;
         
         //Movement Type
-        public enum Type { None, Left, Right, Wiggle, Random }
+        public enum Type { None, Left, Right, Wiggle, Random, Test }
         public Type MovementType;
 
         //how wide the target zone is
@@ -44,7 +44,6 @@ namespace TargetScripts
             get { return _activeTargetCount; }
             set { _activeTargetCount = value; }
         }
-
 
         void Start()
         {
@@ -64,7 +63,8 @@ namespace TargetScripts
         public void SpawnTarget()
         {
             GameObject Clone;
-            Quaternion verticalStraight = new Quaternion(0.7f, 0, 0, 0.7f);
+            //use Qtest to get Quaternion numbers
+            Quaternion verticalStraight = new Quaternion(-0.7f, 0, 0, 0.7f);
             Clone = Instantiate(Target, targetLocation(), verticalStraight);
         }
         public void TargetHit()
@@ -84,8 +84,11 @@ namespace TargetScripts
                 }
             }
             float targetDistance = Random.Range(minDistance, maxDistance);
-
-
+            if (MovementType == Type.Test)
+            {
+                targetRandomX = 0f;
+                targetDistance = 10f;
+            }
             Vector3 newPositon = new Vector3(targetRandomX,targetHeight,targetDistance);
 
             return RangeZero.position + newPositon;
