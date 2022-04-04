@@ -10,52 +10,47 @@ namespace ScoreScripts
     public class ScoreManager : MonoBehaviour
     {
         public static ScoreManager Instance { get; private set; }
-        //public Text MissText;
-        //public Text HitText;
-        //public Text ShotsText;
+        public Text MissText;
+        public Text HitText;
+        public Text ShotsText;
 
-        private int _miss;
+        private int _miss = 0;
         public int Miss
         {
             get { return _miss; }
             set { _miss = value;
-                UpdateHud("Miss", Miss);
+                UpdateHud("Miss", _miss);
             }
         }
 
-        private int _hit;
+        private int _hit = 0;
         public int Hit
         {
             get { return _hit; }
             set { _hit = value;
-                //UpdateHud("Hit", Hit);
+                UpdateHud("Hit", _hit);
             }
         }
 
-        private int _shots;
+        private int _shots = 0;
         public int Shots
         {
             get { return _shots; }
             set { _shots = value;
-                //UpdateHud("Shots", Shots);
+                UpdateHud("Shots", _shots);
             }
         }
         private void UpdateHud(string category, int number)
         {
-            //Debug.Log(category);
-            //Debug.Log(number);
-            HUDManager.Instance.TextUpdate(category, number);
+            //because ScoreManager probably starts before HUDManager
+            //if (HUDManager.Instance !=null)
+                HUDManager.Instance?.TextUpdate(category, number);
         }
-
-
-
         void Start()
         {
             Instance = this;
-            Hit = 0;
-            Miss = 0;
-            Shots = 0;
         }
+        //rework this 
         public void MissCounter()
         {
             Miss++;
@@ -64,13 +59,9 @@ namespace ScoreScripts
         {
             Shots++;
         }
-        public void ComputeScore(Vector3 LocalPoints)
+        public void HitCounter()
         {
             Hit++;
-        }
-        private void UpdateHudManager(string label, int number)
-        {
-            //HudManager.Instance.UpdateHudText(label, number);
         }
     }
 }
