@@ -17,12 +17,14 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //TARGET LAYER IS CURRENTLY 6
-        if (collision.gameObject.layer != 6)
+        //ignore HitDetector layer for collision
+        if (collision.gameObject.layer != 8)
         {
-            TellScore();
+            //TARGET LAYER IS CURRENTLY 6
+            if (collision.gameObject.layer != 6)
+                TellScore();
+            Destroy(gameObject);
         }
-        Destroy(this.gameObject);
     }
     private void TellScore()
     {

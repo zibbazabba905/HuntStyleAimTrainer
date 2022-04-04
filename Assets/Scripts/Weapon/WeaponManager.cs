@@ -45,7 +45,7 @@ namespace WeaponScripts
         {
             Rigidbody clone;
             clone = Instantiate(GS.Projectile, BulletSpawnPoint.position, BulletSpawnPoint.rotation);
-            clone.velocity =clone.transform.forward * GS.BulletSpeed;
+            clone.velocity =BulletSpawnPoint.forward * GS.BulletSpeed;
             ScoreScripts.ScoreManager.Instance.ShotCounter();
             m_LastTimeShot = Time.time;
         }
