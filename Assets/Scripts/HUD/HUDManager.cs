@@ -17,18 +17,17 @@ namespace ScoreScripts
         {
             Instance = this;
         }
-
         void Update()
         {
 
         }
-        public void TextUpdate(string catagory, int number)
+        public void TextUpdate(string category, int number)
         {
-            if (catagory == "Miss")
+            if (category == "Miss")
                 MissText.text = "Miss: " + number;
-            if (catagory == "Hit")
+            if (category == "Hit")
                 HitText.text = "Hit: " + number;
-            if (catagory == "Shots")
+            if (category == "Shots")
                 ShotsText.text = "Shots: " + number;
         }
     }
