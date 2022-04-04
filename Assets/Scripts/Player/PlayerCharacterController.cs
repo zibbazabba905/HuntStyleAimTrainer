@@ -51,11 +51,12 @@ namespace PlayerScripts
         {
             get
             {
-                return 1f;
+                return PlayerSettings.Instance.DownSens;
             }
         }
         PlayerInputHandler m_InputHandler;
         CharacterController m_Controller;
+        
         float RigVerticalAngle = 0f;
 
         void Start()

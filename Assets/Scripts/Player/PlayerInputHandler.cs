@@ -17,21 +17,14 @@ namespace PlayerScripts
         public bool InvertXAxis = false;
 
         bool m_FireInputWasHeld;
+        bool m_EscapeInputHappened;
 
         void Start()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //send to Menus
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
         }
-
-        void Update()
-        {
-            if (Input.GetKey("escape"))
-            {
-                Application.Quit();
-            }
-        }
-
 
         void LateUpdate()
         {
@@ -53,6 +46,7 @@ namespace PlayerScripts
             }
             return false;
         }
+
         public bool CanProcessInput()
         {
             return Cursor.lockState == CursorLockMode.Locked && GameManager.Instance.IsGameRunning;
@@ -70,11 +64,11 @@ namespace PlayerScripts
         }
         public float GetLookInputsHorizontal()
         {
-            return InvertXAxis ? -Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse X");
+            return CanProcessInput()? InvertXAxis ? -Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse X") : 0f;
         }
         public float GetLookInputsVertical()
         {
-            return InvertYAxis ? -Input.GetAxisRaw("Mouse Y") : Input.GetAxisRaw("Mouse Y");
+            return CanProcessInput()? InvertYAxis ? -Input.GetAxisRaw("Mouse Y") : Input.GetAxisRaw("Mouse Y") : 0f;
         }
     }
 }
