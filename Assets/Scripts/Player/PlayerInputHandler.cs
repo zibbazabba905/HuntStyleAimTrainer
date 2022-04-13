@@ -6,6 +6,8 @@ namespace PlayerScripts
 {
     public class PlayerInputHandler : MonoBehaviour
     {
+        //most of this comes from a prebuilt unity tutorial, I really need to re look through now that I understand more
+        public static PlayerInputHandler Instance { get; private set; }
         //HOW MANY OF THESE DO I NEED?
         [Tooltip("Sensitivity multiplier for moving the camera around")]
         public float LookSensitivity = 1f;
@@ -16,20 +18,22 @@ namespace PlayerScripts
         [Tooltip("Used to flip the horizontal input axis")]
         public bool InvertXAxis = false;
 
+        
         bool m_FireInputWasHeld;
-        bool m_EscapeInputHappened;
+        bool m_ShiftInputWasHeld;
 
         void Start()
         {
-            //send to Menus
-            //Cursor.lockState = CursorLockMode.Locked;
-            //Cursor.visible = false;
+            Instance = this;
         }
 
         void LateUpdate()
         {
             m_FireInputWasHeld = GetFireInputHeld();
+            m_ShiftInputWasHeld = GetShiftInputHeld();
+
         }
+        //Change these to a form of GetInput(button)
         public bool GetFireInputDown()
         {
             return GetFireInputHeld() && !m_FireInputWasHeld;
@@ -43,6 +47,22 @@ namespace PlayerScripts
             if (CanProcessInput())
             {
                 return Input.GetButton("Fire1");
+            }
+            return false;
+        }
+        public bool GetShiftInputDown()
+        {
+            return GetShiftInputHeld() && !m_ShiftInputWasHeld;
+        }
+        public bool GetShiftInputReleased()
+        {
+            return !GetShiftInputHeld() && m_ShiftInputWasHeld;
+        }
+        public bool GetShiftInputHeld()
+        {
+            if (CanProcessInput())
+            {
+                return Input.GetButton("Sprint");
             }
             return false;
         }

@@ -8,21 +8,24 @@ namespace PlayerScripts
     {
         public static PlayerSettings Instance { get; private set; }
         private bool gunslingerMode;
+        public GameObject DebugText;
+        public PlayerCharacterController controller;
         public bool GunslingerMode
         {
             get { return gunslingerMode; }
             set { gunslingerMode = value;
             }
         }
+        //convert all these to scriptable objects
+        //settings vs final numbers on things like FOV
 
         private float fov;
         public float FOV
         {
             get { return fov; }
             set { fov = value;
-                //NULL CHECK AGAIN?
-                //now done in the SliderScript
-                //Menus.Instance.UpdateSliderText(Menus.Instance.FOVSlider, value);
+                controller.CameraFOVset();
+                //try and convert this to int?
             }
         }
 
@@ -32,7 +35,6 @@ namespace PlayerScripts
         {
             get { return downSens; }
             set { downSens = value;
-                //Menus.Instance.UpdateSliderText(Menus.Instance.DownSlider, value);
             }
         }
 
@@ -41,7 +43,6 @@ namespace PlayerScripts
         {
             get { return hipSens; }
             set { hipSens = value;
-                //Menus.Instance.UpdateSliderText(Menus.Instance.HipSlider, value);
             }
         }
 
@@ -50,7 +51,6 @@ namespace PlayerScripts
         {
             get { return aimSens; }
             set { aimSens = value;
-                //Menus.Instance.UpdateSliderText(Menus.Instance.AimSlider, value);
             }
         }
 
@@ -58,7 +58,8 @@ namespace PlayerScripts
         {
             Instance = this;
 
-            //Preset settings?
+            //Preset settings? does not override unity settings
+            controller = GetComponent<PlayerCharacterController>();
             GunslingerMode = false;
             DownSens = 1;
             HipSens = 1;
