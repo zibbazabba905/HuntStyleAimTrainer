@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,9 @@ using UnityEngine.UI;
 
 namespace ScoreScripts
 {
-    //MAKE A HUD MANAGER AS WELL
     public class ScoreManager : MonoBehaviour
     {
+        //turn these into scriptable objects
         public static ScoreManager Instance { get; private set; }
         public Text MissText;
         public Text HitText;
@@ -42,14 +43,23 @@ namespace ScoreScripts
         }
         private void UpdateHud(string category, int number)
         {
-            //because ScoreManager probably starts before HUDManager
+            //because ScoreManager starts before HUDManager
             //if (HUDManager.Instance !=null)
                 HUDManager.Instance?.TextUpdate(category, number);
         }
         void Start()
         {
             Instance = this;
+            Menus.OnReset += ResetScore;
         }
+
+        private void ResetScore()
+        {
+            Miss = 0;
+            Hit = 0;
+            Shots = 0;
+        }
+
         //rework this 
         public void MissCounter()
         {
@@ -63,5 +73,6 @@ namespace ScoreScripts
         {
             Hit++;
         }
+        
     }
 }
