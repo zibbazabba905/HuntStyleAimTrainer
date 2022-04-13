@@ -96,7 +96,7 @@ public class Menus : MonoBehaviour
     }
     public bool GetEscapeInput()
     {
-        return (!escapeInputHappened) && Application.isEditor ? Input.GetButton("Tab") : Input.GetButton("Cancel");
+        return !escapeInputHappened && (Application.isEditor ? Input.GetButton("Tab") : Input.GetButton("Cancel"));
     }
 
     //Main Menu Button Functions
