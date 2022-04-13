@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //probably YAGNI if other managers work right
     public static GameManager Instance { get; private set; }
     public bool IsGameRunning;
     public static bool GameIsPaused;
