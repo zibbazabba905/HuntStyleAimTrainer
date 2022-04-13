@@ -14,6 +14,7 @@ public class Menus : MonoBehaviour
     public GameObject MenuMain;
     public GameObject MenuPlayer;
     public GameObject MenuGame;
+    public GameObject MenuInfo;
     public GameObject HUD;
 
 
@@ -66,37 +67,36 @@ public class Menus : MonoBehaviour
             //exit menus
             else
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                Time.timeScale = 1;
-                HUD.SetActive(true);
                 closeMenus();
             }
             inMenus = !inMenus;
-        }
-        //console log test
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log("blah");
         }
     }
     private void closeMenus()
     {
         foreach (Transform child in transform)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 1;
+            HUD.SetActive(true);
             child.gameObject.SetActive(false);
         }
+    }
+    public void CloseMenuElsewhere()
+    {
+        closeMenus();
+        inMenus = false;
     }
 
     //Key Inputs
     private void LateUpdate()
     {
-        //find a way to use escape on game mode and tab in editor 
-        escapeInputHappened = Input.GetButton("Cancel");
+        escapeInputHappened = Application.isEditor ? Input.GetButton("Tab") : Input.GetButton("Cancel");
     }
     public bool GetEscapeInput()
     {
-        return Input.GetButton("Cancel") && !escapeInputHappened;
+        return (!escapeInputHappened) && Application.isEditor ? Input.GetButton("Tab") : Input.GetButton("Cancel");
     }
 
     //Main Menu Button Functions
@@ -110,9 +110,23 @@ public class Menus : MonoBehaviour
         MenuMain.SetActive(false);
         MenuGame.SetActive(true);
     }
+    public void OpenInfoMenu()
+    {
+        MenuMain.SetActive(false);
+        MenuInfo.SetActive(true);
+    }
+
     public void QuitGame()
     {
         Debug.Log("Quit Clicked");
         Application.Quit();
+    }
+
+    //I should be able to link this all to button.OnClick, or I should put this OnReset somewhere else
+    public static event Action OnReset;
+
+    public void ResetGame()
+    {
+        OnReset?.Invoke();
     }
 }
