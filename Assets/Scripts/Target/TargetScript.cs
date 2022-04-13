@@ -5,18 +5,10 @@ using UnityEngine.Events;
 
 namespace TargetScripts
 {
+    //make this more generic
     public class TargetScript : MonoBehaviour
     {
         private bool wasHit = false;
-        void Start()
-        {
-
-        }
-
-        void FixedUpdate()
-        {
-            //Movement code will go here
-        }
         void OnCollisionEnter(Collision collision)
         {
             if (!wasHit)
@@ -32,8 +24,7 @@ namespace TargetScripts
                 ScoreScripts.ScoreManager.Instance.HitCounter();
                 Destroy(gameObject, 2);
                 wasHit = true;
-            }
- 
+            } 
         }
     }
 }

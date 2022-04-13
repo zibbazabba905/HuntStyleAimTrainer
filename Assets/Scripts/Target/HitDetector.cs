@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ScoreScripts
 {
+    //make this more generic
     public class HitDetector : MonoBehaviour
     {
         private void OnCollisionEnter(Collision collision)
