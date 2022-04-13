@@ -59,3 +59,225 @@ down: -8.5f, baseFOV +15
 Sprint: -8.5f, baseFOV +15
 hip: -6.5f, baseFOV
 ads: -4.5f, baseFOV-20
+
+min and max for sliders
+
+FOV 80 to 120
+sens .10 to 3.00
+hunt 2.00 = game 1.0?
+
+
+copying hunt style!
+
+down
+hip
+ads
+sprint?
+
+if !gunslinger
+    down
+if !gunslinger && rclick
+    hip
+if !gunslinger && shift
+    sprint
+if !gunslinger && rclick && shift
+    ads
+
+if down && rclick
+    hip
+if down && shift
+    sprint
+if hip && shift
+    ads
+if sprint && rclick
+    hip (setting?)
+
+States first
+
+down
+    noshoot
+    if shift =sprint true
+    if rclick 
+        if gs =ads sprint false
+        if !gs = hip sprint false
+hip
+    shoot = true
+    sprint = false
+    if shift 
+        if gs?
+        if !gs =ads
+    if rclick
+        if gs 
+        if !gs
+ads
+    shoot = true
+    sprint = false
+    if shift
+    if rclick
+
+Mode first
+gs
+    down
+        if !shift -hip
+        if rclick -ads
+    hip
+        if shift -sprint do special
+        if rclick -ads
+    ads
+        if shift -sprint do special
+        if !rclick -hip 
+    sprint
+        if !shift -hip
+        if rclick -ads
+
+!gs hunter mode
+    down
+        if shift -sprint
+        if rclick -hip
+    hip
+        if shift -ads
+        if !rclick -down
+    ads
+        if !shift -hip
+        if !rclick -down
+    sprint
+        if !shift -down
+        if rclick -hip
+
+
+down
+    if shift
+        !gs -sprint
+    if rclick
+        gs -ads
+        !gs -hip
+    if !shift
+        gs -hip
+hip
+    if shift
+        gs sprint special
+        !gs -ads
+    if rclick
+        gs -ads
+    if !rclick
+        !gs = -down
+ads
+    if shift
+        gs -sprint special
+    if !shift
+        !gs -hip
+    if !rclick
+        gs -hip
+        !gs -down
+sprint
+
+
+add on like they did version
+
+!gs hunter mode
+    
+    down
+        cansprint = true
+        if shift trysprint()
+        if rclick -hip
+    hip
+        cansprint = gs? true : false
+        if shift gs? trysprint() : -ads
+        if !rclick && gs? -down
+    ads
+        cansprint = false unneeded?
+        if !shift -hip
+        if !rclick -down
+    
+    trysprint()
+        if cansprint && moveforward
+
+    sprint
+        if !shift -down
+        if rclick -hip
+
+As Inputs
+    hipfire = gs? true : rclick()
+    //ads = gs? rclick() : rclick() && shift()
+    ads = hipfire && gs? rclick() : shift(); 
+    sprint = trySprint() && moveForward()
+    trysprint() = shift() && cansprint() 
+    cansprint() return gs? hipfire || ads : !rclick()
+
+
+    player movement state test thing:
+    {
+    public class PlayerMovementState : MonoBehaviour
+    {
+        public enum State { DOWN, HIP, AIM, SPRINT }
+        public State MovementState;
+        public bool Sprint;
+
+
+        PlayerSettings PlayerSettings;
+        private bool rightClick;  //FIX
+
+        void Start()
+        {
+            PlayerSettings = GetComponent<PlayerSettings>();
+            MovementState = PlayerSettings.Instance.GunslingerMode ? State.HIP : State.DOWN;
+        }
+
+        void Update()
+        {
+            TestState();
+        }
+
+        void TestState()
+        {
+            switch (MovementState)
+            {
+                case State.DOWN:
+                    if (PlayerSettings.Instance.GunslingerMode)
+                        if (!Sprinting())
+                        {
+                            MovementState = State.HIP;
+                        }
+                    else
+                        if (rightClick)
+                            MovementState = State.HIP;
+                    break;
+                case State.HIP:
+                    if (PlayerSettings.Instance.GunslingerMode)
+                    {
+                        if (rightClick)
+                        MovementState = State.AIM;
+                        else if (Sprinting())
+                        MovementState = State.DOWN;
+                    }
+                    else
+                        blah;
+                        
+                    break;
+                case State.AIM:
+                    break;
+                case State.SPRINT:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private bool Sprinting()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+read current state
+read lateupdate state
+event on state start
+    exit coroutine
+
+if current state != late state
+    do current state start
+        set properties
+        start exit coroutine
+            on exit set current state
+late state == current state
