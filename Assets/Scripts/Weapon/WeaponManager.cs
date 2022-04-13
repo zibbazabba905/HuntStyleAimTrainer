@@ -6,6 +6,8 @@ using PlayerScripts;
 
 namespace WeaponScripts
 {
+    //probably YAGNI, will be a while before I add bespoke weapons if I do this method at all
+    //mostly taken from a unity tutorial demo
     public class WeaponManager : MonoBehaviour
     {
         public Transform BulletSpawnPoint;
@@ -26,7 +28,7 @@ namespace WeaponScripts
 
         public bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
         {
-            if (inputDown)
+            if (inputDown && PlayerStateThird.Instance.CurrentState != PlayerStateThird.MoveState.Down)
             {
                 return TryShoot();
             }
@@ -45,7 +47,7 @@ namespace WeaponScripts
         {
             Rigidbody clone;
             clone = Instantiate(GS.Projectile, BulletSpawnPoint.position, BulletSpawnPoint.rotation);
-            clone.velocity =BulletSpawnPoint.forward * GS.BulletSpeed;
+            clone.velocity = BulletSpawnPoint.forward * GS.BulletSpeed;
             ScoreScripts.ScoreManager.Instance.ShotCounter();
             m_LastTimeShot = Time.time;
         }

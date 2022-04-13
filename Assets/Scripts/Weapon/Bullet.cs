@@ -4,6 +4,8 @@ using UnityEngine;
 using ScoreScripts;
 
 public class Bullet : MonoBehaviour
+    //could be possible to do all the hit detection logic from the bullet instead of the target
+    //might be easier to keep track of
 {
     void Start()
     {
