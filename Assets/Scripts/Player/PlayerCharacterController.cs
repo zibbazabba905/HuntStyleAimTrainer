@@ -39,7 +39,7 @@ namespace PlayerScripts
         [Tooltip("Rotation speed for moving the camera")]
         public float RotationSpeed = 200f;
         [Range(0.1f, 1f)]
-        //no aim yet
+        
         [Tooltip("Rotation speed multiplier when aiming")]
         public float AimingRotationMultiplier = 0.4f;
 
