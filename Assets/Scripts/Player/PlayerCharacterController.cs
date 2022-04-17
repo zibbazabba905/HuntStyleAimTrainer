@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayerScripts;
 using System;
-//using Patterns;
 
 namespace PlayerScripts
 {
@@ -16,87 +15,115 @@ namespace PlayerScripts
         public GameObject Rig;
         public Camera Camera;
 
-        //no jump yet
-        public float GravityDownForce = 20f;
-        [Tooltip("Physic layers checked to consider the player grounded")]
-        public LayerMask GroundCheckLayers = -1;
-        [Tooltip("distance from the bottom of the character controller capsule to test for grounded")]
-        public float GroundCheckDistance = 0.05f;
 
         [Header("Movement")]
         [Tooltip("Max movement speed when grounded (when not sprinting)")]
         public float MaxSpeedOnGround = 2.5f;
         [Tooltip("Sharpness for the movement when grounded, a low value will make the player accelerate and decelerate slowly, a high value will do the opposite")]
         public float MovementSharpnessOnGround = 15;
-        
+
+        [Header("Rotation")]
+        [Tooltip("Rotation speed for moving the camera")]
+        public float RotationSpeed = 200f;
+
         //no jump yet
+        [Header("No Jump Yet")]
+        public float GravityDownForce = 20f;
+        [Tooltip("Physic layers checked to consider the player grounded")]
+        public LayerMask GroundCheckLayers = -1;
+        [Tooltip("distance from the bottom of the character controller capsule to test for grounded")]
+        public float GroundCheckDistance = 0.05f;
         [Tooltip("Max movement speed when not grounded")]
         public float MaxSpeedInAir = 2.5f;
         [Tooltip("Acceleration speed when in the air")]
         public float AccelerationSpeedInAir = 25f;
 
-        [Header("Rotation")]
-        [Tooltip("Rotation speed for moving the camera")]
-        public float RotationSpeed = 200f;
-        [Range(0.1f, 1f)]
-        
-        [Tooltip("Rotation speed multiplier when aiming")]
-        public float AimingRotationMultiplier = 0.4f;
+        [SerializeField] private StateData stateData;
+
+
 
         public Vector3 CharacterVelocity { get; set; }
-        public bool IsGrounded { get; private set; }
+        //public bool IsGrounded { get; private set; }
 
         //set these as scriptable object and do modifiers to them
+        //public bool ShouldSprint { get; set; }
+
         public float CurrentSens { get; set; }
 
-        public bool ShouldSprint { get; set; }
-        public float RotationMultiplier
+        private bool gunslingerMode;
+        public bool GunslingerMode
         {
-            get
+            get { return gunslingerMode; }
+            set
             {
-                return CurrentSens;
+                gunslingerMode = value;
             }
         }
-        private float fovMultiplier;
 
-        public float FOVmultiplier
+
+        private float baseFOV;
+        public float BaseFOV
         {
-            get { return fovMultiplier; }
-            set { fovMultiplier = value;
-                CameraFOVset();
+            get { return baseFOV; }
+            set
+            {
+                baseFOV = value;
+                //controller.CameraFOVset();
+                //try and convert this to int?
             }
         }
 
-        //used to adapt FOV with the wonky camera angle the game uses
-        private float currentCameraAngle;
+        /*        public float FOVmultiplier
+                {
+                    get { return fovMultiplier; }
+                    set { fovMultiplier = value;
+                        CameraFOVset();
+                    }
+                }
 
-        public float CurrentCameraAngle
-        {
-            get { return currentCameraAngle; }
-            set { currentCameraAngle = value;
-                CameraAngleSet();
-            }
-        }
+                //used to adapt FOV with the wonky camera angle Hunt uses
+                private float currentCameraAngle;
 
+                public float CurrentCameraAngle
+                {
+                    get { return currentCameraAngle; }
+                    set { currentCameraAngle = value;
+                        CameraAngleSet();
+                    }
+                }
+        */
         PlayerInputHandler m_InputHandler;
         CharacterController m_Controller;
-        PlayerSettings m_Settings;
+        //PlayerSettings m_Settings;
         public GameObject DebugText;
         
         float RigVerticalAngle = 0f;
-
+        
         void Start()
         {
             // fetch components on the same gameObject
             //THIS IS THE STEP I ALWAYS FORGET TO DO
             m_Controller = GetComponent<CharacterController>();
             m_InputHandler = GetComponent<PlayerInputHandler>();
-            m_Settings= GetComponent<PlayerSettings>();
+
+            baseFOV = 90f;
+            //m_Settings= GetComponent<PlayerSettings>();
+
             Menus.OnReset += ResetPositionOnReset;
+            PlayerStateThird.StateChange += onStateChange;
+        }
+
+        //actions
+        private void onStateChange(StateData newStateData)
+        {
+            stateData = newStateData;
+            CameraFOVset();
+            CameraAngleSet();
         }
 
         private void ResetPositionOnReset()
         {
+            
             //another quick fix?
             //cannot move while time is stopped
             Menus.Instance.CloseMenuElsewhere();
@@ -116,13 +143,13 @@ namespace PlayerScripts
             {
                 // rotate the transform with the input speed around its local Y axis
                 transform.Rotate(
-                    new Vector3(0f, (m_InputHandler.GetLookInputsHorizontal() * RotationSpeed * RotationMultiplier),
+                    new Vector3(0f, (m_InputHandler.GetLookInputsHorizontal() * RotationSpeed * stateData.Sens),
                         0f), Space.Self);
             }
             // vertical camera rotation
             {
                 //vert input to rig vertical angle
-                RigVerticalAngle += m_InputHandler.GetLookInputsVertical() * RotationSpeed * RotationMultiplier;
+                RigVerticalAngle += m_InputHandler.GetLookInputsVertical() * RotationSpeed * stateData.Sens;
                 //Limit the vertical angle min/max
                 RigVerticalAngle = Mathf.Clamp(RigVerticalAngle, -89f, 89f);
                 //Apply vert angle as local rotation to transform "along it's right axis?"
@@ -170,13 +197,15 @@ namespace PlayerScripts
             // Gets a reoriented direction that is tangent to a given slope
             m_Controller.Move(CharacterVelocity * Time.deltaTime);
         }
+
+        //camera settings
         public void CameraFOVset()
         {
-            Camera.fieldOfView = Camera.HorizontalToVerticalFieldOfView(PlayerSettings.Instance.FOV + FOVmultiplier, Camera.aspect);
+            Camera.fieldOfView = Camera.HorizontalToVerticalFieldOfView(BaseFOV + stateData.FOVChange, Camera.aspect);
         }
         private void CameraAngleSet()
         {
-            Camera.transform.localEulerAngles = new Vector3(+CurrentCameraAngle, 0f, 0f);
+            Camera.transform.localEulerAngles = new Vector3(+stateData.CameraAngle, 0f, 0f);
             
         }
     }

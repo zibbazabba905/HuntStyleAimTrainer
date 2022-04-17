@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,13 @@ namespace PlayerScripts
         public PlayerSettings Settings;
         public GameObject Crosshairs;
 
+        public static event Action<StateData> StateChange;
+
+        [Header("State Variables")]
+        public StateData DownData;
+        public StateData HipData;
+        public StateData AimData;
+
         void Start()
         {
             Instance = this;
@@ -45,29 +53,34 @@ namespace PlayerScripts
         private void Down()
         {
             //set properties
-            Controller.CurrentSens = Settings.DownSens;
+            StateChange.Invoke(DownData);
+            /*Controller.CurrentSens = Settings.DownSens;
             Controller.FOVmultiplier = 15;
             Controller.CurrentCameraAngle = -8.5f;
             Crosshairs.SetActive(false);
+            */
             StartCoroutine(ExitDown());
         }
         private void Hip()
         {
             //set properties
-            Controller.CurrentSens = Settings.HipSens;
+            StateChange.Invoke(HipData);
+            /*Controller.CurrentSens = Settings.HipSens;
             Controller.FOVmultiplier = 0;
             Controller.CurrentCameraAngle = -6.5f;
             Crosshairs.SetActive(true);
+            */
             StartCoroutine(ExitHip());
         }
         private void Aim()
         {
             //set properties
-            Controller.CurrentSens = Settings.AimSens;
+            StateChange.Invoke(AimData);
+            /*Controller.CurrentSens = Settings.AimSens;
             Controller.FOVmultiplier = -20;
             Controller.CurrentCameraAngle = -4.5f;
             Crosshairs.SetActive(true);
-
+            */
             StartCoroutine(ExitAim());
         }
         private IEnumerator ExitDown()
