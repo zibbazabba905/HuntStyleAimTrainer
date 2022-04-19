@@ -7,24 +7,17 @@ using UnityEngine.UI;
 public class Menus : MonoBehaviour
 {
     public static Menus Instance { get; private set; }
-    PlayerScripts.PlayerSettings Settings;
     
-
     [Header("Menus")]
     public GameObject MenuMain;
     public GameObject MenuPlayer;
     public GameObject MenuGame;
     public GameObject MenuInfo;
     public GameObject HUD;
+    public GameObject Crosshairs;
 
-
-    private GameObject FOVslider;
-    private GameObject DOWNslider;
-    private GameObject HIPslider;
-    private GameObject AIMslider;
-
-    [Header("HunterGunslinger Input")]
-    public GameObject GunslingerToggle;
+    //I should be able to link this all to button.OnClick, or I should put this OnReset somewhere else
+    public static event Action OnReset;
 
     private bool inMenus;
     private bool escapeInputHappened;
@@ -32,12 +25,13 @@ public class Menus : MonoBehaviour
     void Start()
     {
         Instance = this;
-        Settings = PlayerScripts.PlayerSettings.Instance;
-        FOVslider = MenuPlayer.transform.Find("FOV").gameObject;
-        DOWNslider = MenuPlayer.transform.Find("DOWN sens").gameObject;
-        HIPslider = MenuPlayer.transform.Find("HIP sens").gameObject;
-        AIMslider = MenuPlayer.transform.Find("ADS sens").gameObject;
         StartInMenu();
+        PlayerScripts.PlayerStateThird.StateChange += OnStateChange;
+    }
+
+    private void OnStateChange(StateData NewState)
+    {
+        Crosshairs.SetActive(NewState.CrosshairActive);
     }
 
     private void StartInMenu()
@@ -121,9 +115,6 @@ public class Menus : MonoBehaviour
         Debug.Log("Quit Clicked");
         Application.Quit();
     }
-
-    //I should be able to link this all to button.OnClick, or I should put this OnReset somewhere else
-    public static event Action OnReset;
 
     public void ResetGame()
     {
