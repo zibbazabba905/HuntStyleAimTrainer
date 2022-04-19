@@ -7,6 +7,7 @@ namespace WeaponScripts
 
     //will contain data about weapon
     //I want this to contain all the weapon basics, bullet speed, sway, crosshairs, ammo
+    //make scriptable object?
     public class GunScript : MonoBehaviour
     {
         public Rigidbody Projectile;
