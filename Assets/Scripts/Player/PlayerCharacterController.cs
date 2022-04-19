@@ -13,7 +13,7 @@ namespace PlayerScripts
 
         //using camera "rig" instead of camera to hold objects seperate from camera view
         public GameObject Rig;
-        public Camera Camera;
+        public Camera m_camera;
 
 
         [Header("Movement")]
@@ -22,10 +22,13 @@ namespace PlayerScripts
         [Tooltip("Sharpness for the movement when grounded, a low value will make the player accelerate and decelerate slowly, a high value will do the opposite")]
         public float MovementSharpnessOnGround = 15;
 
+        //math out this rotation speed stuff eventually
+        //need to figure out game and this thing's cm / 360 rotation
         [Header("Rotation")]
         [Tooltip("Rotation speed for moving the camera")]
         public float RotationSpeed = 200f;
 
+/*
         //no jump yet
         [Header("No Jump Yet")]
         public float GravityDownForce = 20f;
@@ -37,18 +40,15 @@ namespace PlayerScripts
         public float MaxSpeedInAir = 2.5f;
         [Tooltip("Acceleration speed when in the air")]
         public float AccelerationSpeedInAir = 25f;
+        //public bool IsGrounded { get; private set; }
+
+ */
 
         [SerializeField] private StateData stateData;
 
 
 
         public Vector3 CharacterVelocity { get; set; }
-        //public bool IsGrounded { get; private set; }
-
-        //set these as scriptable object and do modifiers to them
-        //public bool ShouldSprint { get; set; }
-
-        public float CurrentSens { get; set; }
 
         private bool gunslingerMode;
         public bool GunslingerMode
@@ -60,7 +60,6 @@ namespace PlayerScripts
             }
         }
 
-
         private float baseFOV;
         public float BaseFOV
         {
@@ -68,34 +67,16 @@ namespace PlayerScripts
             set
             {
                 baseFOV = value;
-                //controller.CameraFOVset();
-                //try and convert this to int?
+                //set camera angle off of fov
             }
         }
 
-        /*        public float FOVmultiplier
-                {
-                    get { return fovMultiplier; }
-                    set { fovMultiplier = value;
-                        CameraFOVset();
-                    }
-                }
-
-                //used to adapt FOV with the wonky camera angle Hunt uses
-                private float currentCameraAngle;
-
-                public float CurrentCameraAngle
-                {
-                    get { return currentCameraAngle; }
-                    set { currentCameraAngle = value;
-                        CameraAngleSet();
-                    }
-                }
-        */
         PlayerInputHandler m_InputHandler;
         CharacterController m_Controller;
-        //PlayerSettings m_Settings;
         public GameObject DebugText;
+
+        //GF is base camera angle
+        private float GF = 0;
         
         float RigVerticalAngle = 0f;
         
@@ -107,7 +88,6 @@ namespace PlayerScripts
             m_InputHandler = GetComponent<PlayerInputHandler>();
 
             baseFOV = 90f;
-            //m_Settings= GetComponent<PlayerSettings>();
 
             Menus.OnReset += ResetPositionOnReset;
             PlayerStateThird.StateChange += onStateChange;
@@ -117,13 +97,14 @@ namespace PlayerScripts
         private void onStateChange(StateData newStateData)
         {
             stateData = newStateData;
-            CameraFOVset();
-            CameraAngleSet();
+            StopCoroutine("lerpFOV");
+            StartCoroutine("lerpFOV", Camera.VerticalToHorizontalFieldOfView(m_camera.fieldOfView, m_camera.aspect));
+            StopCoroutine("lerpCameraAngle");
+            StartCoroutine("lerpCameraAngle", GF);
         }
 
         private void ResetPositionOnReset()
         {
-            
             //another quick fix?
             //cannot move while time is stopped
             Menus.Instance.CloseMenuElsewhere();
@@ -199,14 +180,31 @@ namespace PlayerScripts
         }
 
         //camera settings
-        public void CameraFOVset()
+        IEnumerator lerpFOV(float currentFOV)
         {
-            Camera.fieldOfView = Camera.HorizontalToVerticalFieldOfView(BaseFOV + stateData.FOVChange, Camera.aspect);
+            float timeElapsed = 0;
+            float lerpDuration = 0.25f;
+            while (timeElapsed < lerpDuration)
+            {
+                float lerpedFOV = Mathf.Lerp(currentFOV, baseFOV + stateData.FOVChange, timeElapsed / lerpDuration);
+                m_camera.fieldOfView = Camera.HorizontalToVerticalFieldOfView(lerpedFOV, m_camera.aspect);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
         }
-        private void CameraAngleSet()
+        IEnumerator lerpCameraAngle(float currentPos)
         {
-            Camera.transform.localEulerAngles = new Vector3(+stateData.CameraAngle, 0f, 0f);
-            
+            float timeElapsed = 0;
+            float lerpDuration = 0.25f;
+            float angleTest = 0;
+            while (timeElapsed < lerpDuration)
+            {
+                angleTest = Mathf.Lerp(currentPos, stateData.CameraAngle, timeElapsed/lerpDuration);
+                GF = angleTest;
+                m_camera.transform.localEulerAngles = new Vector3(angleTest, 0f, 0f);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
         }
     }
 }

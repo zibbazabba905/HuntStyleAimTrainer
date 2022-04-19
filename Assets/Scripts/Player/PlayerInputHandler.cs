@@ -31,9 +31,9 @@ namespace PlayerScripts
         {
             m_FireInputWasHeld = GetFireInputHeld();
             m_ShiftInputWasHeld = GetShiftInputHeld();
-
         }
         //Change these to a form of GetInput(button)
+        //figured it out, original came from having controller support, and things like triggers are axis and don't have getButton/getButtonDown
         public bool GetFireInputDown()
         {
             return GetFireInputHeld() && !m_FireInputWasHeld;

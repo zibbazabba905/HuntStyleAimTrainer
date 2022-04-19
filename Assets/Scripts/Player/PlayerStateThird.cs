@@ -14,7 +14,7 @@ namespace PlayerScripts
                     //on exit set current state
                 //late state == current state
 
-        //yes I'm still thinking about this, 3 states, 2 inputs and a bool. Currently works. Adding more coroutines/events later.
+        //yes I'm still thinking about this, 3 states, 2 inputs and a bool. Currently works.
         //the game I'm basing this on was probably done in flowgraph so anything is better.
 
         public static PlayerStateThird Instance { get; private set; }
@@ -23,8 +23,6 @@ namespace PlayerScripts
         //init state problem
         private MoveState lateState = MoveState.Hip;
         public PlayerCharacterController Controller;
-        public PlayerSettings Settings;
-        public GameObject Crosshairs;
 
         public static event Action<StateData> StateChange;
 
@@ -37,7 +35,6 @@ namespace PlayerScripts
         {
             Instance = this;
             Controller = GetComponent<PlayerCharacterController>();
-            Settings = GetComponent<PlayerSettings>();
         }
 
         void Update()
@@ -52,44 +49,26 @@ namespace PlayerScripts
         //lerp all these settings
         private void Down()
         {
-            //set properties
             StateChange.Invoke(DownData);
-            /*Controller.CurrentSens = Settings.DownSens;
-            Controller.FOVmultiplier = 15;
-            Controller.CurrentCameraAngle = -8.5f;
-            Crosshairs.SetActive(false);
-            */
             StartCoroutine(ExitDown());
         }
         private void Hip()
         {
-            //set properties
             StateChange.Invoke(HipData);
-            /*Controller.CurrentSens = Settings.HipSens;
-            Controller.FOVmultiplier = 0;
-            Controller.CurrentCameraAngle = -6.5f;
-            Crosshairs.SetActive(true);
-            */
             StartCoroutine(ExitHip());
         }
         private void Aim()
         {
-            //set properties
             StateChange.Invoke(AimData);
-            /*Controller.CurrentSens = Settings.AimSens;
-            Controller.FOVmultiplier = -20;
-            Controller.CurrentCameraAngle = -4.5f;
-            Crosshairs.SetActive(true);
-            */
             StartCoroutine(ExitAim());
         }
         private IEnumerator ExitDown()
         {
             while (CurrentState == MoveState.Down)
             {
-                if (PlayerSettings.Instance.GunslingerMode ? !Input.GetKey(KeyCode.LeftShift) : Input.GetMouseButton(1))
+                if (Controller.GunslingerMode ? !Input.GetKey(KeyCode.LeftShift) : Input.GetMouseButton(1))
                     CurrentState = MoveState.Hip;
-                else if (PlayerSettings.Instance.GunslingerMode && Input.GetMouseButton(1))
+                else if (Controller.GunslingerMode && Input.GetMouseButton(1))
                     CurrentState = MoveState.Aim;
                 yield return null;
             }
@@ -98,10 +77,10 @@ namespace PlayerScripts
         {
             while (CurrentState == MoveState.Hip)
             {
-                if (PlayerSettings.Instance.GunslingerMode ? (Input.GetKey(KeyCode.LeftShift) && IsMoving()) : !Input.GetMouseButton(1))
+                if (Controller.GunslingerMode ? (Input.GetKey(KeyCode.LeftShift) && IsMoving()) : !Input.GetMouseButton(1))
                     CurrentState = MoveState.Down;
                 //GetKeyDown here
-                else if (PlayerSettings.Instance.GunslingerMode ? Input.GetMouseButton(1) : Input.GetKeyDown(KeyCode.LeftShift))
+                else if (Controller.GunslingerMode ? Input.GetMouseButton(1) : Input.GetKeyDown(KeyCode.LeftShift))
                     CurrentState = MoveState.Aim;
                 yield return null;
             }
@@ -111,9 +90,9 @@ namespace PlayerScripts
             while (CurrentState == MoveState.Aim)
             {
                 //GetKeyDown here
-                if (PlayerSettings.Instance.GunslingerMode ? (Input.GetKeyDown(KeyCode.LeftShift) && IsMoving()) : !Input.GetMouseButton(1))
+                if (Controller.GunslingerMode ? (Input.GetKey(KeyCode.LeftShift) && IsMoving()) : !Input.GetMouseButton(1))
                     CurrentState = MoveState.Down;
-                else if (PlayerSettings.Instance.GunslingerMode? !Input.GetMouseButton(1) : !Input.GetKey(KeyCode.LeftShift))
+                else if (Controller.GunslingerMode? !Input.GetMouseButton(1) : !Input.GetKey(KeyCode.LeftShift))
                     CurrentState = MoveState.Hip;
                 yield return null;
             }
