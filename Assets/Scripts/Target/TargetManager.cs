@@ -8,7 +8,7 @@ namespace TargetScripts
 {
     public class TargetManager : MonoBehaviour
     {
-        //make more generic
+        //make more generic?
         //should be seperated into check/logic/spawn scripts to become more generic
         //should also be able to turn into a bulletspawner in a bullet-hell style game
         public static TargetManager Instance { get; private set; }
@@ -74,9 +74,7 @@ namespace TargetScripts
         public void SpawnTarget()
         {
             GameObject Clone;
-            //use Qtest to get Quaternion numbers
-            //or switch to eulerangle version
-            Quaternion verticalStraight = new Quaternion(-0.7f, 0, 0, 0.7f);
+            Quaternion verticalStraight = Quaternion.Euler(-90, 0, 0);
             Clone = Instantiate(Target, targetLocation(), verticalStraight);
         }
         public void TargetHit()

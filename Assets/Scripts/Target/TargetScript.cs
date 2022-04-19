@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace TargetScripts
 {
-    //make this more generic
+    //make this more generic?
     public class TargetScript : MonoBehaviour
     {
         private bool wasHit = false;

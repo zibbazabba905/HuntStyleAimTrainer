@@ -16,8 +16,11 @@ namespace ScoreScripts
         }
         private IEnumerator LastHitCheck()
         {
+            //make last hit stand out in color and above others then on next hit resess into target and different color
+            this.gameObject.transform.localPosition += new Vector3(0, 0, -0.1f);
             while (HitMarkerScript.Instance.LastHit == this.gameObject)
                 yield return null;
+            this.gameObject.transform.localPosition -= new Vector3(0, 0, -0.1f);
             GetComponent<Renderer>().material.color = Color.green;
         }
     }
