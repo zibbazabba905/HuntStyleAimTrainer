@@ -97,10 +97,10 @@ namespace PlayerScripts
         private void onStateChange(StateData newStateData)
         {
             stateData = newStateData;
-            StopCoroutine("lerpFOV");
-            StartCoroutine("lerpFOV", Camera.VerticalToHorizontalFieldOfView(m_camera.fieldOfView, m_camera.aspect));
-            StopCoroutine("lerpCameraAngle");
-            StartCoroutine("lerpCameraAngle", GF);
+            StopCoroutine("OffsetCamera");
+            StartCoroutine("OffsetCamera", Camera.VerticalToHorizontalFieldOfView(m_camera.fieldOfView, m_camera.aspect));
+            //StopCoroutine("lerpCameraAngle");
+            //StartCoroutine("lerpCameraAngle", GF);
         }
 
         private void ResetPositionOnReset()
@@ -115,7 +115,8 @@ namespace PlayerScripts
         void Update()
         {
             HandleCharacterMovement();
-            DebugText.GetComponent<DebugText>().SetText(PlayerStateThird.Instance.CurrentState.ToString());
+
+            //DebugText.GetComponent<DebugText>().SetText(PlayerStateThird.Instance.CurrentState.ToString());
         }
 
         private void HandleCharacterMovement()
@@ -180,28 +181,18 @@ namespace PlayerScripts
         }
 
         //camera settings
-        IEnumerator lerpFOV(float currentFOV)
+        IEnumerator OffsetCamera(float currentFOV)
         {
             float timeElapsed = 0;
             float lerpDuration = 0.25f;
+            float angleTest = m_camera.fieldOfView * 0.166667f;
             while (timeElapsed < lerpDuration)
             {
                 float lerpedFOV = Mathf.Lerp(currentFOV, baseFOV + stateData.FOVChange, timeElapsed / lerpDuration);
                 m_camera.fieldOfView = Camera.HorizontalToVerticalFieldOfView(lerpedFOV, m_camera.aspect);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-        }
-        IEnumerator lerpCameraAngle(float currentPos)
-        {
-            float timeElapsed = 0;
-            float lerpDuration = 0.25f;
-            float angleTest = 0;
-            while (timeElapsed < lerpDuration)
-            {
-                angleTest = Mathf.Lerp(currentPos, stateData.CameraAngle, timeElapsed/lerpDuration);
-                GF = angleTest;
-                m_camera.transform.localEulerAngles = new Vector3(angleTest, 0f, 0f);
+                angleTest = m_camera.fieldOfView * 0.1f;
+                DebugText.GetComponent<DebugText>().SetText("blah" + ( m_camera.fieldOfView / angleTest));
+                m_camera.transform.localEulerAngles = new Vector3(-angleTest, 0f, 0f);
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }
