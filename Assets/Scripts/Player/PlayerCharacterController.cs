@@ -185,7 +185,7 @@ namespace PlayerScripts
         {
             float timeElapsed = 0;
             float lerpDuration = 0.25f;
-            float angleTest = m_camera.fieldOfView * 0.166667f;
+            float angleTest = m_camera.fieldOfView * 0.1f;
             while (timeElapsed < lerpDuration)
             {
                 float lerpedFOV = Mathf.Lerp(currentFOV, baseFOV + stateData.FOVChange, timeElapsed / lerpDuration);
