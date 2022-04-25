@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StateHip
   m_EditorClassIdentifier: 
   Sens: 0.72
-  FOVChange: 0
+  FOVChange: -15
   CameraAngle: -6.5
   WeaponPosition: {x: 0.105, y: 0.64, z: 0.4038}
   WeaponRotation: {x: 0, y: 85, z: 0}

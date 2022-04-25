@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: StateAim
   m_EditorClassIdentifier: 
   Sens: 0.44
-  FOVChange: -20
-  CameraAngle: -4.5
+  FOVChange: -40
   WeaponPosition: {x: 0, y: 0.665, z: 0.4018998}
   WeaponRotation: {x: 0, y: 90, z: 0}
   CrosshairActive: 0

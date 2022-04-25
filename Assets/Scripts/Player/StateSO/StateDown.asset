@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StateDown
   m_EditorClassIdentifier: 
   Sens: 2
-  FOVChange: 15
+  FOVChange: 0
   CameraAngle: -8.3
   WeaponPosition: {x: 0, y: 0.61, z: 0.4018}
   WeaponRotation: {x: -30, y: 10, z: 15}
