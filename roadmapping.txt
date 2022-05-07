@@ -1,0 +1,82 @@
+roadmapping
+# = low priority
+
+
+game
+player
+weapons
+target
+level
+effects
+
+
+game:
+  #make an actual flow
+    start, level select, play, reset, time
+  #use different scenes, or different places in the same scene?
+  ####stat tracking and score keeping
+
+player:
+  get someone to look over/refactor aim states
+    It's so specific to _this_ game only, and including all the quirks is something
+    intentionally coding it bad to be more authentic?
+  add kick and hitpunch effect
+    measure kick/time from game
+    does it need horizontal offset or a random endpoint?
+    should these be the same function?
+  #add a jump maybe? (nah)
+  #compare and test sensitivity levels with other DPI
+
+
+weapons:
+  specific weapons or player set settings?
+  ammo, bullet speed, sway, ironsights, kick
+  does the target do "onCollision" or does the bullet call a "class?.GetShot()"
+  change bullet direction from "forward" to screenpoint raycast method 
+
+  problem: gameObject vs Raycast:
+    gameObject
+      spawn bullet with velocity use physics engine.
+      +literally a projectile
+      -have to do continous collision detection on everything involved
+      -at the mercy of however physics wants to deal with it
+    Raycast
+      bullet moves 1/speed*fixedDeltaTime checks between previous point and current point for collision
+      +less overhead(gameobject instantiation, physics)
+      -rewriting something that already exists (physics)
+      -function tied to player that called it?
+      -just a different way of making a game object?
+        whats the difference between bullet.currentPos and Bullet(clone).transform?
+
+
+target:
+  make more human shaped
+    get outline shapes from game
+    face on vs side on
+    how much more work is making targets vs puting in a generic figure
+  different hitboxes
+    head / upper torso / body
+      health or number of hits?
+  need "fight back" system
+    target sees player for too long and causes hitpunch?
+      length of time - player set, difficulty set, or dynamic set
+
+
+
+level:
+  close medium long ranges
+    close - endless hallways
+    medium - building setpiece
+    long - open field/range
+  get a napkin sketch from a level designer
+    targets spawn from cover, peek out or run to other cover
+    hunt compounds example
+  put target tracks from cover to cover
+
+
+
+effects:
+  Don't care, It's just fluff until project is closer to completed
+  ###record and add sound effects
+  ###add actual art to the level
+
